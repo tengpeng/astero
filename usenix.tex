@@ -1,0 +1,259 @@
+% TEMPLATE for Usenix papers, specifically to meet requirements of
+%  USENIX '05
+% originally a template for producing IEEE-format articles using LaTeX.
+%   written by Matthew Ward, CS Department, Worcester Polytechnic Institute.
+% adapted by David Beazley for his excellent SWIG paper in Proceedings,
+%   Tcl 96
+% turned into a smartass generic template by De Clarke, with thanks to
+%   both the above pioneers
+% use at your own risk.  Complaints to /dev/null.
+% make it two column with no page numbering, default is 10 point
+
+% Munged by Fred Douglis <douglis@research.att.com> 10/97 to separate
+% the .sty file from the LaTeX source template, so that people can
+% more easily include the .sty file into an existing document.  Also
+% changed to more closely follow the style guidelines as represented
+% by the Word sample file. 
+
+% Note that since 2010, USENIX does not require endnotes. If you want
+% foot of page notes, don't include the endnotes package in the 
+% usepackage command, below.
+
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix,epsfig,endnotes}
+\usepackage{dirtytalk}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usepackage{enumitem}
+
+% \setlist[enumerate]{topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex}
+\setlist[enumerate]{nosep}
+
+\begin{document}
+
+%don't want date printed
+\date{}
+
+%make title bold and 14 pt font (Latex default is non-bold, 16 pt)
+\title{\Large \bf Astero : a peer-to-peer international money transfer protocol}
+
+\author{
+{\rm Teng Peng}\\
+draft April 24, 2021
+% \and
+% {\rm Second Name}\\
+% Second Institution
+}
+
+\maketitle
+
+% Use the following at camera-ready time to suppress page numbers.
+% Comment it out when you first submit the paper for review.
+\thispagestyle{empty}
+
+
+\subsection*{Abstract}
+Westernunion and its competitors have been highly inefficient in transferring money across borders. These legacy organizations, built before the internet age, do not provide service with low fees, short waiting time and high amount limits. This paper outlines a peer-to-peer international money transfer platform called Astero that supports individuals and business transfer and exchange money worldwide with instant delivery, unlimited amounts and low fees. To achieve these goals, we introduces 1.an orderbook-based fiat currency exchange. 2.a stackexchange-like community for dispute resolution and counter-party risk reduction. Astero can outperform Westernunion by 100x with sub-minute settlement time, 100x higher amount limits, 10x lower fees.
+
+\section{Introduction}
+
+The foreign exchange is the largest financial market in the world – 40x to 100x larger than crypto exchange, with a daily volume of \$6.6 trillion. SWIFT handles about \$5 trillion per day. However, the legacy money transfer service are slow and expensive based on the standard of the internet-age. US bank requires customers to initiate transfer in-person. Westernunion limits the amounts transferred to \$5000 from the U.S. to China. Paypal boasts their international payment fees are \say{as low as 4.4\% plus fixed fees}.  
+
+These legacy service fall short with the expectations in 2 situations:
+% \begin{itemize}[]
+%     \item \textbf{E-commerce}: Many small cross-border e-commerce owners get paid via Amazon Pay, Paypal and Shopify Pay and they are charged insane fees to transfer the money to their own local bank account. The common alternative is underground banks who often disappear overnight with even higher fees.
+%     \item \textbf{Workers, travellers \& students}: They have to follow the low amount limits imposed by Westerenunion and send small amounts of money many times. The common alternative is to exchange money with their colleagues, classmates and other acquaintance and this is inefficient and risky.
+% \end{itemize}
+
+\begin{enumerate}
+    \item \textbf{E-commerce}: Many small cross-border e-commerce owners get paid via Amazon Pay, Paypal and Shopify Pay and they are charged insane fees to transfer the money to their own local bank account. The common alternative is underground banks who often disappear overnight with even higher fees.
+    \item \textbf{Workers, travellers \& students}: They have to follow the low amount limits imposed by Westerenunion and send small amounts of money many times. The common alternative is to exchange money with their colleagues, classmates and other acquaintance and this is inefficient and risky.
+\end{enumerate} 
+This paper presents a peer to peer international money transfer platform called Astero, which is more efficient, cheaper, and faster than legacy organizations; safer than underground banks and other alternatives:
+
+\begin{table}[h!]
+\resizebox{0.48\textwidth}{!}{
+\centering
+\begin{tabular}{c c c c c|} 
+  \hline
+ \textbf{Solutions} & \textbf{Time} & \textbf{Costs} & \textbf{Risks} \\ [0.5ex] 
+ \hline\hline
+ Legacy & 1-5 business days & 1\%-5\%+  & \cellcolor[HTML]{5BC236} \textbf{Very low} \\ 
+ Underground bank & Various & 1\%-5\%+ &  Very high \\
+ Acquaintance & Various & Various & High \\
+ Astero & \cellcolor[HTML]{5BC236} \textbf{Sub-minute} & \cellcolor[HTML]{5BC236} \textbf{0.1\%-} & \cellcolor[HTML]{5BC236} \textbf{Very low} \\[1ex] 
+ \hline
+\end{tabular}
+}
+\caption{Comparisons of international money transfer solutions}
+\label{table:1}
+\end{table}
+
+The main process of Astero is to convert international money transfer to local money transfer by matching two transfer with opposite directions, and resolve disputations on-chain if there are any.
+
+There are 2 major roles in Astero:
+\begin{enumerate}
+    \item \textbf{Users} : send, exchange and receive money on Astero, paying fees to the platform and arbitrators.
+    \item \textbf{Arbitrator}: resolve disputes between users if there are disputes.
+\end{enumerate}
+
+\textbf{Example} Alice in the U.S. wants to send ¥100 to Lee in China, while Chen in China wants to send \$15 USD to Bob in the U.S.:
+\begin{enumerate}
+    \item Alice send \$15 to Bob, and Chen send ¥100 to Lee. 
+    \item Lee and Bob confirm they have received fund.
+    \item If there are disputes, the community would resolve the disputes on-chain and receive rewards.
+\end{enumerate}
+
+This example is illustrated below.
+
+% \begin{figure}
+% \centering
+%\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt    
+%\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%\uncomment if require: \path (0,479); %set diagram left start at 0, and has height of 479
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+ %\ \path (0,477); %set diagram left start at 0, and has height of 477
+
+%Rounded Rect [id:dp49505854339024224] 
+\draw   (31,64) .. controls (31,59.58) and (34.58,56) .. (39,56) -- (93,56) .. controls (97.42,56) and (101,59.58) .. (101,64) -- (101,88) .. controls (101,92.42) and (97.42,96) .. (93,96) -- (39,96) .. controls (34.58,96) and (31,92.42) .. (31,88) -- cycle ;
+%Rounded Rect [id:dp09233470791774001] 
+\draw   (168,67) .. controls (168,62.58) and (171.58,59) .. (176,59) -- (230,59) .. controls (234.42,59) and (238,62.58) .. (238,67) -- (238,91) .. controls (238,95.42) and (234.42,99) .. (230,99) -- (176,99) .. controls (171.58,99) and (168,95.42) .. (168,91) -- cycle ;
+%Rounded Rect [id:dp3868328824146371] 
+\draw   (167,155) .. controls (167,150.58) and (170.58,147) .. (175,147) -- (229,147) .. controls (233.42,147) and (237,150.58) .. (237,155) -- (237,179) .. controls (237,183.42) and (233.42,187) .. (229,187) -- (175,187) .. controls (170.58,187) and (167,183.42) .. (167,179) -- cycle ;
+%Rounded Rect [id:dp662351202925868] 
+\draw   (78,395) .. controls (78,390.58) and (81.58,387) .. (86,387) -- (181,387) .. controls (185.42,387) and (189,390.58) .. (189,395) -- (189,419) .. controls (189,423.42) and (185.42,427) .. (181,427) -- (86,427) .. controls (81.58,427) and (78,423.42) .. (78,419) -- cycle ;
+%Rounded Rect [id:dp9065258846865593] 
+\draw   (152,41.8) .. controls (152,30.31) and (161.31,21) .. (172.8,21) -- (235.2,21) .. controls (246.69,21) and (256,30.31) .. (256,41.8) -- (256,194.2) .. controls (256,205.69) and (246.69,215) .. (235.2,215) -- (172.8,215) .. controls (161.31,215) and (152,205.69) .. (152,194.2) -- cycle ;
+%Rounded Rect [id:dp4318994349778683] 
+\draw   (17,41) .. controls (17,29.95) and (25.95,21) .. (37,21) -- (97,21) .. controls (108.05,21) and (117,29.95) .. (117,41) -- (117,195) .. controls (117,206.05) and (108.05,215) .. (97,215) -- (37,215) .. controls (25.95,215) and (17,206.05) .. (17,195) -- cycle ;
+%Rounded Rect [id:dp3780732560664163] 
+\draw   (78,282) .. controls (78,277.58) and (81.58,274) .. (86,274) -- (167,274) .. controls (171.42,274) and (175,277.58) .. (175,282) -- (175,306) .. controls (175,310.42) and (171.42,314) .. (167,314) -- (86,314) .. controls (81.58,314) and (78,310.42) .. (78,306) -- cycle ;
+%Rounded Rect [id:dp08742103944201252] 
+\draw   (21,274) .. controls (21,265.16) and (28.16,258) .. (37,258) -- (240,258) .. controls (248.84,258) and (256,265.16) .. (256,274) -- (256,322) .. controls (256,330.84) and (248.84,338) .. (240,338) -- (37,338) .. controls (28.16,338) and (21,330.84) .. (21,322) -- cycle ;
+%Straight Lines [id:da8733103399186236] 
+\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (68,98) -- (68.48,147) ;
+\draw [shift={(68.5,149)}, rotate = 269.44] [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da9359509435626804] 
+\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (202,146) -- (202.48,104) ;
+\draw [shift={(202.5,102)}, rotate = 450.65] [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da3552484521411541] 
+\draw    (134.5,270) -- (201.73,188.54) ;
+\draw [shift={(203,187)}, rotate = 489.53] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da655726433823563] 
+\draw    (132.5,385) -- (132.02,324) ;
+\draw [shift={(132,322)}, rotate = 449.55] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Rounded Rect [id:dp28723408749458335] 
+\draw   (35,156) .. controls (35,151.58) and (38.58,148) .. (43,148) -- (97,148) .. controls (101.42,148) and (105,151.58) .. (105,156) -- (105,180) .. controls (105,184.42) and (101.42,188) .. (97,188) -- (43,188) .. controls (38.58,188) and (35,184.42) .. (35,180) -- cycle ;
+%Straight Lines [id:da018314734563788848] 
+\draw    (71.5,191) -- (133.25,268.44) ;
+\draw [shift={(134.5,270)}, rotate = 231.43] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da953119324034293] 
+\draw [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ]   (101,76) -- (168.5,76) ;
+\draw [shift={(170.5,76)}, rotate = 180] [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da42635837985542213] 
+\draw [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ]   (167.5,167) -- (103.5,167.97) ;
+\draw [shift={(101.5,168)}, rotate = 359.13] [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (49,64) node [anchor=north west][inner sep=0.75pt]   [align=left] {Alice};
+% Text Node
+\draw (189,68) node [anchor=north west][inner sep=0.75pt]   [align=left] {Lee};
+% Text Node
+\draw (100,399) node [anchor=north west][inner sep=0.75pt]   [align=left] {Community};
+% Text Node
+\draw (51,1) node [anchor=north west][inner sep=0.75pt]   [align=left] {U.S.};
+% Text Node
+\draw (185,3) node [anchor=north west][inner sep=0.75pt]   [align=left] {China};
+% Text Node
+\draw (94,286) node [anchor=north west][inner sep=0.75pt]   [align=left] {Contracts};
+% Text Node
+\draw (182,318) node [anchor=north west][inner sep=0.75pt]   [align=left] {Ethereum};
+% Text Node
+\draw (206,121) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\scriptsize  Yuan}};
+% Text Node
+\draw (152,352) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\scriptsize Resolve disputes}};
+% Text Node
+\draw (55,160) node [anchor=north west][inner sep=0.75pt]  [font=\small] [align=left] {Bob};
+% Text Node
+\draw (73,116) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\scriptsize  USD}};
+% Text Node
+\draw (46,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\scriptsize Confirm}};
+% Text Node
+\draw (185,160) node [anchor=north west][inner sep=0.75pt]  [font=\small] [align=left] {Chen};
+% Text Node
+\draw (195,231) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\scriptsize Confirm}};
+% Text Node
+\draw (198,429) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\scriptsize \textcolor[rgb]{0.82,0.01,0.11}{Red: original}}\\{\scriptsize \textcolor[rgb]{0.29,0.56,0.89}{Blue: new}}};
+% Text Node
+\draw (120,50) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\scriptsize USD}};
+% Text Node
+\draw (121,147) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\scriptsize Yuan}};
+
+\end{tikzpicture}
+% \caption{Lee in China charges Alice in the U.S. ¥100 for an e-commerce payment}
+
+% \end{figure}
+
+\section{Goals}
+The two major goals of our designs are:
+\begin{enumerate}
+    \item \textbf{Safety} : Users do not lost their own funds using Astero, which often times happens on underground banks.
+    \item \textbf{Efficiency}: Users spend less costs and time than using legacy financial service.
+\end{enumerate}
+
+There are several existing challenges to achieve these goals:
+\begin{enumerate}
+    \item \textbf{Anti-fraud} : If a user claims funds have been already sent but the other user claims otherwise, how should we resolve these disputes? What if arbitrators are bribed by a user to rule in favor of the briber despite facts presented by the other party? How do we settle disagreements among arbitrators?
+    \item \textbf{Protection of privacy}: If users agree to upload evidence of transfer during dispute resolution, how do we protect the privacy of users? What if arbitrators misuse the private information of users?
+\end{enumerate}
+
+\section{Design}
+We sketch one possible design to achieve these goals.
+
+
+\subsection{Process of money transfer}
+The protocol is designed for crypto-crypto transfer, crypto-fiat transfer and fiat-fiat transfer. 
+
+\begin{enumerate}
+    \item \textbf{Crypto-crypto transfer} : Both party would send money to the contract first. If money is received from both party, the contract would send money to recipients automatically. No arbitration is needed.
+    \item \textbf{Crypto-fiat transfer}: The crypto would be send to the contract. If the recipient of fiat confirms, the crypto is released. If there are disputes, users can originate arbitration process.
+    \item \textbf{Fiat-fiat transfer}: The user with higher reputation points receive money first, then the user send money to another user. If there are disputes, users can originate arbitration process.
+\end{enumerate}
+
+This process encourages crypto-crypto transfer since no arbitration is ever needed. It also favors crypto holders because the user would receive fiat first and the probability of losing crypto sent to contracts are low if the arbitration mechanism works. This also favors users with high reputation points because they receive money first.
+
+
+\subsection{Reputation-based arbitration mechanism}
+Reputation is defined as a function of honesty, volume, and contribution to the protocol. Similar to the practice of stackexchange, reputation is at the core of arbitration mechanism. 
+
+All users would start with 0 reputation and grow their reputation as they actively using the protocol. This leads to a cold start problem: if all users are considered 0 reputation at the very beginning, how could they trade with each other and grow their reputation? The protocol would provide 2 ways as solutions: 1. users could choose link their twitter profile with the protocol and get social verification. 2. users could collateralize with cryptos that worth more than the money they receive.
+
+ Arbitrators are elected by the rank of the reputation. To prevent spams, all dispute submitted require a dispute resolution fees paid by the originator of dispute. Arbitrators would comment on evidence of both sides, and they could comment on each others' comment. If one comment is considered to be wrong by other arbitrators, the comment would get down voted by others: the original commenter would lost reputation points. To prevent spams, the downvoters would also lost reputation points but much smaller than that of the original commenter. If an arbitrator has great contribution to resolve the dispute, then upvotes are given by other arbitrators. Upvoters would gain reputation points but much smaller than that of the original commenter.
+ 
+ \section{Examples}
+ \subsection{E-commerce}
+ Lee located in China is a cross-border e-commerce owner on Shopify. He does not have a U.S. bank account but he has large amounts of USD on Shopify. The protocol can match him with another user who wants to exchange USD for Yuan. Suppose he has higher reputation points since he is a frequent user. He would receive Yuan on his local bank first. Then he would send money to the other user. This is a fiat-fiat transaction.
+ 
+ \subsection{Oversea employees}
+Alice resides in Japan and she works for an American crypto company, paying her USDC. She can get matched with another user who needs USDC in exchange of Japanese Yen. She could send her USDC to the contracts and release USDC once she confirms. This is a crypto-fiat transaction.
+
+ \subsection{Decentralized OTC}
+Two anonymous users want to have a OTC trade for a low-liquidity coins. They both send funds to the contracts and the contracts would handle the rest. 
+
+{\footnotesize \bibliographystyle{acm}
+\bibliography{sample}}
+
+
+%\theendnotes
+
+\end{document}
+
+
+
+
+
+
+
